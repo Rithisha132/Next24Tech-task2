@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Home Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #a3bffa;
+      color: #333;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(to bottom, #8e2de2, #4a00e0);
+      color: white;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar .welcome {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .light-control {
+      background-color: #000;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .light-circle {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      background: radial-gradient(circle, #fff, #000);
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .light-control h3 {
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+
+    .main {
+      flex: 1;
+      background-color: #f4f6fb;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    /* Room Buttons */
+    .rooms {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .room-btn {
+      padding: 10px 18px;
+      border-radius: 25px;
+      border: 2px solid transparent;
+      background-color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .room-btn:hover {
+      border-color: #8e2de2;
+      background-color: #eee;
+    }
+
+    .room-btn.active {
+      background: linear-gradient(to right, #8e2de2, #4a00e0);
+      color: white;
+      border: none;
+    }
+
+    /* Device Grid */
+    .devices {
+      display: none;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+    }
+
+    .devices.active {
+      display: grid;
+    }
+
+    .device-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .device-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .device-card.on {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: white;
+    }
+
+    .device-card h3 {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .toggle-btn {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      padding-top: 15px;
+      color: #777;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+      }
+
+      .light-control {
+        display: none;
+      }
+
+      .main {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div>
+      <h2>Hi Rithisha Reddy!</h2>
+      <div class="welcome">Welcome to smart home.</div>
+    </div>
+    <div class="light-control">
+      <div class="light-circle">75%</div>
+      <h3>LIGHT INTENSITY</h3>
+      <p>Kitchen</p>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Room Selector Buttons -->
+    <div class="rooms">
+      <button class="room-btn active" onclick="showRoom(this, 'kitchen')">Kitchen</button>
+      <button class="room-btn" onclick="showRoom(this, 'bedroom')">Bedroom</button>
+      <button class="room-btn" onclick="showRoom(this, 'livingroom')">Livingroom</button>
+      <button class="room-btn" onclick="showRoom(this, 'garage')">Garage</button>
+      <button class="room-btn" onclick="showRoom(this, 'garbage')">Garbage</button>
+    </div>
+
+    <!-- Room Device Panels -->
+    <div id="kitchen" class="devices active">
+      <div class="device-card on">
+        <h3>Smart TV</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">ON</button>
+      </div>
+      <div class="device-card on">
+        <h3>AC</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">ON</button>
+      </div>
+    </div>
+
+    <div id="bedroom" class="devices">
+      <div class="device-card">
+        <h3>Lamp</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">OFF</button>
+      </div>
+      <div class="device-card">
+        <h3>Alarm Clock</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">OFF</button>
+      </div>
+    </div>
+
+    <div id="livingroom" class="devices">
+      <div class="device-card on">
+        <h3>Speakers</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">ON</button>
+      </div>
+      <div class="device-card">
+        <h3>Projector</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">OFF</button>
+      </div>
+    </div>
+
+    <div id="garage" class="devices">
+      <div class="device-card">
+        <h3>Garage Door</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">OFF</button>
+      </div>
+      <div class="device-card on">
+        <h3>Security Cam</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">ON</button>
+      </div>
+    </div>
+
+    <div id="garbage" class="devices">
+      <div class="device-card">
+        <h3>Smart Bin</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">OFF</button>
+      </div>
+      <div class="device-card">
+        <h3>Odor Sensor</h3>
+        <button class="toggle-btn" onclick="toggleDevice(this)">OFF</button>
+      </div>
+    </div>
+
+    <footer>© 2025 Smart Home Inc.</footer>
+  </div>
+</div>
+
+<script>
+  function toggleDevice(btn) {
+    const card = btn.parentElement;
+    if (btn.textContent === 'ON') {
+      btn.textContent = 'OFF';
+      card.classList.remove('on');
+    } else {
+      btn.textContent = 'ON';
+      card.classList.add('on');
+    }
+  }
+
+  function showRoom(button, roomId) {
+    // Toggle visible room
+    document.querySelectorAll('.devices').forEach(d => d.classList.remove('active'));
+    document.getElementById(roomId).classList.add('active');
+
+    // Toggle active button style
+    document.querySelectorAll('.room-btn').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
